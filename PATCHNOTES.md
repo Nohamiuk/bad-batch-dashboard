@@ -4,6 +4,14 @@ Les versions les plus récentes sont en haut. Le numéro de build correspond au 
 
 ---
 
+## BUILD 3.13 — Médailles dans le formulaire de candidature
+*20/11/2026*
+
+- `candidature.html` : nouvelle liste des 12 médailles (escouade + B.O.S) ; le candidat coche celles qu'il possède, **au moins 2** pour pouvoir envoyer.
+- Fiche candidat : les médailles possédées apparaissent dans « 📄 Candidature complète ».
+
+---
+
 ## BUILD 3.12 — Site réorganisé, confirmation Discord médailles, tableau PDS
 *04/11/2026*
 
