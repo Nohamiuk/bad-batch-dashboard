@@ -78,6 +78,14 @@
     .champ:focus { border-color: #fbbf24; }
     .etiquette { display: block; font-family: 'Share Tech Mono', monospace; font-size: 0.8125rem; color: #cbd5e1; margin-bottom: 0.25rem; }
     .etiquette b { color: #ff2e43; }
+    .medaille-case { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.6rem; border: 1px solid #1f2737; border-radius: 4px; background: #07090e; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.8125rem; color: #cbd5e1; }
+    .medaille-case:hover { border-color: #2b374c; }
+    .medaille-case:has(input:checked) { border-color: #fbbf24; background: rgba(251, 191, 36, 0.08); color: #f1f5f9; }
+    .medaille-case input { accent-color: #fbbf24; }
+    .medaille-pastille { width: 0.6rem; height: 0.6rem; border-radius: 9999px; flex-shrink: 0; }
+    .medaille-titre { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: #64748b; text-transform: uppercase; margin: 0.5rem 0 0.35rem; }
+    .medaille-grille { display: grid; grid-template-columns: 1fr; gap: 0.4rem; }
+    @media (min-width: 640px) { .medaille-grille { grid-template-columns: 1fr 1fr; } }
     .piege { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   </style>
 </head>
@@ -165,6 +173,12 @@
           <textarea class="champ" id="f-remarques" rows="3" maxlength="1500" required></textarea>
         </div>
 
+        <div>
+          <span class="etiquette">🎖️ Médailles que vous possédez (au moins 2) <b>*</b></span>
+          <div id="f-medailles"></div>
+          <p id="compteur-medailles" class="text-[0.75rem] font-terminal text-gray-500 mt-1.5">0 sélectionnée — minimum 2</p>
+        </div>
+
         <!-- Piège anti-robots : invisible pour une personne, rempli par les robots -->
         <div class="piege" aria-hidden="true">
           <label>Ne pas remplir <input type="text" id="f-site" tabindex="-1" autocomplete="off"></label>
@@ -220,6 +234,44 @@
     }, () => { recrutementOuvert = false; afficherEtat(); });
     setTimeout(() => { if (!document.getElementById('bloc-chargement').classList.contains('hidden')) afficherEtat(); }, 8000);
 
+    // Liste identique à la constante MEDAILLES de index.html (à garder synchronisée)
+    const MEDAILLES = [
+      { id: 'commandement',  cat: 'escouade', lib: "Médaille du Commandement",   couleur: '#fbbf24' },
+      { id: 'veteran',       cat: 'escouade', lib: "Médaille du Vétéran",        couleur: '#fbbf24' },
+      { id: 'excellence',    cat: 'escouade', lib: "Médaille de l'Excellence",   couleur: '#fbbf24' },
+      { id: 'tireur-elite',  cat: 'escouade', lib: "Médaille du Tireur d'Élite", couleur: '#fbbf24' },
+      { id: 'soldat-elite',  cat: 'escouade', lib: "Médaille du Soldat d'Élite", couleur: '#fbbf24' },
+      { id: 'survivant',     cat: 'escouade', lib: "Médaille du Survivant",      couleur: '#fbbf24' },
+      { id: 'sauveur',       cat: 'escouade', lib: "Médaille du Sauveur",        couleur: '#fbbf24' },
+      { id: 'bos-honneur',       cat: 'bos', lib: "[B.O.S] Croix d'Honneur de la B.O.S",              couleur: '#facc15' },
+      { id: 'bos-fraternite',    cat: 'bos', lib: "[B.O.S] Croix de la Fraternité",                   couleur: '#c2410c' },
+      { id: 'bos-renseignement', cat: 'bos', lib: "[B.O.S] Médaille du Renseignement",                couleur: '#f472b6' },
+      { id: 'bos-agent',         cat: 'bos', lib: "[B.O.S] Médaille de l'Agent de Terrain",           couleur: '#a78bfa' },
+      { id: 'bos-veteran-fs',    cat: 'bos', lib: "[B.O.S] Médaille du Vétéran des Forces Spéciales", couleur: '#60a5fa' }
+    ];
+    const MIN_MEDAILLES = 2;
+    const blocMedailles = document.getElementById('f-medailles');
+    [['escouade', 'Escouade'], ['bos', 'B.O.S']].forEach(([cat, titre]) => {
+      const t = document.createElement('div'); t.className = 'medaille-titre'; t.textContent = titre; blocMedailles.appendChild(t);
+      const grille = document.createElement('div'); grille.className = 'medaille-grille';
+      MEDAILLES.filter(m => m.cat === cat).forEach(m => {
+        const lab = document.createElement('label'); lab.className = 'medaille-case';
+        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.name = 'medaille'; cb.value = m.id;
+        const pas = document.createElement('span'); pas.className = 'medaille-pastille'; pas.style.background = m.couleur;
+        const txt = document.createElement('span'); txt.textContent = m.lib;
+        lab.append(cb, pas, txt); grille.appendChild(lab);
+      });
+      blocMedailles.appendChild(grille);
+    });
+    const medaillesCochees = () => [...blocMedailles.querySelectorAll('input[name="medaille"]:checked')].map(i => i.value);
+    const majCompteurMedailles = () => {
+      const n = medaillesCochees().length;
+      const cpt = document.getElementById('compteur-medailles');
+      cpt.textContent = `${n} sélectionnée${n > 1 ? 's' : ''}${n < MIN_MEDAILLES ? ` — minimum ${MIN_MEDAILLES}` : ' ✔'}`;
+      cpt.style.color = n >= MIN_MEDAILLES ? '#10b981' : '#64748b';
+    };
+    blocMedailles.addEventListener('change', majCompteurMedailles);
+
     const lire = (id) => document.getElementById(id).value.trim();
     const erreur = document.getElementById('erreur-formulaire');
     const montrerErreur = (msg) => { erreur.textContent = msg; erreur.classList.remove('hidden'); };
@@ -245,6 +297,8 @@
       const manquants = Object.values(champs).some(v => v === '');
       if (manquants) { montrerErreur("Merci de répondre à toutes les questions (elles sont toutes obligatoires)."); return; }
       if (!['hunter', 'tech', 'wrecker', 'crosshair'].includes(champs.poste)) { montrerErreur("Choisis un personnage dans la liste."); return; }
+      const medailles = medaillesCochees().filter(id => MEDAILLES.some(m => m.id === id));
+      if (medailles.length < MIN_MEDAILLES) { montrerErreur(`Sélectionne au moins ${MIN_MEDAILLES} médailles que tu possèdes.`); return; }
 
       try {
         const dernier = parseInt(localStorage.getItem(CLE_ENVOI) || '0', 10);
@@ -259,6 +313,7 @@
         await Promise.race([
           setDoc(doc(collection(baseDeDonnees, 'candidatures')), {
             ...champs,
+            medailles,
             pseudo: champs.identite,           // nom affiché dans la console
             statut: 'nouvelle',
             avisCandidature: {},
