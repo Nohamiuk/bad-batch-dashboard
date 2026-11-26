@@ -234,15 +234,21 @@
     }, () => { recrutementOuvert = false; afficherEtat(); });
     setTimeout(() => { if (!document.getElementById('bloc-chargement').classList.contains('hidden')) afficherEtat(); }, 8000);
 
-    // Liste identique à la constante MEDAILLES de index.html (à garder synchronisée)
+    // Médailles du formulaire. Les ids communs avec MEDAILLES (index.html) doivent rester identiques ;
+    // les médailles propres au formulaire ont leur libellé dans LIBELLES_MEDAILLES_CANDIDATURE (index.html).
     const MEDAILLES = [
+      { id: 'supreme-service', cat: 'escouade', lib: "Médaille du Suprême Service Rendu", couleur: '#fbbf24' },
       { id: 'commandement',  cat: 'escouade', lib: "Médaille du Commandement",   couleur: '#fbbf24' },
       { id: 'veteran',       cat: 'escouade', lib: "Médaille du Vétéran",        couleur: '#fbbf24' },
+      { id: 'arc-trooper',   cat: 'escouade', lib: "Médaille de l'ARC Trooper",  couleur: '#fbbf24' },
+      { id: 'aiwha',         cat: 'escouade', lib: "Médaille de l'Aiwha",        couleur: '#fbbf24' },
       { id: 'excellence',    cat: 'escouade', lib: "Médaille de l'Excellence",   couleur: '#fbbf24' },
       { id: 'tireur-elite',  cat: 'escouade', lib: "Médaille du Tireur d'Élite", couleur: '#fbbf24' },
       { id: 'soldat-elite',  cat: 'escouade', lib: "Médaille du Soldat d'Élite", couleur: '#fbbf24' },
-      { id: 'survivant',     cat: 'escouade', lib: "Médaille du Survivant",      couleur: '#fbbf24' },
       { id: 'sauveur',       cat: 'escouade', lib: "Médaille du Sauveur",        couleur: '#fbbf24' },
+      { id: 'survivant',     cat: 'escouade', lib: "Médaille du Survivant",      couleur: '#fbbf24' },
+      { id: 'honneur',       cat: 'escouade', lib: "Médaille de l'Honneur",      couleur: '#fbbf24' },
+      { id: 'instructeur',   cat: 'escouade', lib: "Médaille de l'Instructeur",  couleur: '#fbbf24' },
       { id: 'bos-honneur',       cat: 'bos', lib: "[B.O.S] Croix d'Honneur de la B.O.S",              couleur: '#facc15' },
       { id: 'bos-fraternite',    cat: 'bos', lib: "[B.O.S] Croix de la Fraternité",                   couleur: '#c2410c' },
       { id: 'bos-renseignement', cat: 'bos', lib: "[B.O.S] Médaille du Renseignement",                couleur: '#f472b6' },
@@ -251,7 +257,7 @@
     ];
     const MIN_MEDAILLES = 2;
     const blocMedailles = document.getElementById('f-medailles');
-    [['escouade', 'Escouade'], ['bos', 'B.O.S']].forEach(([cat, titre]) => {
+    [['escouade', 'Générales'], ['bos', 'B.O.S']].forEach(([cat, titre]) => {
       const t = document.createElement('div'); t.className = 'medaille-titre'; t.textContent = titre; blocMedailles.appendChild(t);
       const grille = document.createElement('div'); grille.className = 'medaille-grille';
       MEDAILLES.filter(m => m.cat === cat).forEach(m => {
