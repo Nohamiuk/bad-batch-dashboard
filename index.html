@@ -1366,7 +1366,7 @@
     </div>
   </div>
 
-  <!-- FOOTER MILITAIRE PERMANENT (FIRMWARE MARAUDEUR // BUILD 3.13) -->
+  <!-- FOOTER MILITAIRE PERMANENT (FIRMWARE MARAUDEUR // BUILD 3.14) -->
   <footer class="border-t border-bordureTactique bg-fondCarbone/95 py-2.5 text-xs font-terminal text-gray-500 fixed bottom-0 left-0 right-0 z-30 shadow-2xl backdrop-blur">
     <div class="max-w-screen-2xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-1.5">
       <div class="text-gray-400 flex items-center gap-2">
@@ -1376,7 +1376,7 @@
       <div class="flex items-center gap-3">
         <span class="text-gray-500 hidden md:inline">GRANDE ARMÉE DE LA RÉPUBLIQUE</span>
         <span class="px-2.5 py-0.5 bg-amber-500/15 border border-amber-500/60 text-amber-300 text-[0.8125rem] font-titre font-bold rounded tracking-wider shadow-[0_0_10px_rgba(245,158,11,0.25)]">
-          FIRMWARE MARAUDEUR // BUILD 3.13
+          FIRMWARE MARAUDEUR // BUILD 3.14
         </span>
       </div>
     </div>
@@ -1859,6 +1859,14 @@
         { id: 'bos-agent',         cat: 'bos', lib: "[B.O.S] Médaille de l'Agent de Terrain",           couleur: '#a78bfa' },
         { id: 'bos-veteran-fs',    cat: 'bos', lib: "[B.O.S] Médaille du Vétéran des Forces Spéciales", couleur: '#60a5fa' }
       ];
+      // Médailles présentes uniquement dans le formulaire de candidature (candidature.html), pour l'affichage de la fiche candidat
+      const LIBELLES_MEDAILLES_CANDIDATURE = {
+        'supreme-service': "Médaille du Suprême Service Rendu",
+        'arc-trooper':     "Médaille de l'ARC Trooper",
+        'aiwha':           "Médaille de l'Aiwha",
+        'honneur':         "Médaille de l'Honneur",
+        'instructeur':     "Médaille de l'Instructeur"
+      };
       let medailleMembreOuvert = null;
 
       function medaillesDuMembre(m) { return (m && m.medailles) || {}; }
@@ -3270,7 +3278,7 @@
               ${ligne('Régiment', c.regiment)}
               ${ligne('Grade', c.grade)}
               ${ligne('Poste visé', (POSTES_RECRUTEMENT[c.poste] || {}).lib)}
-              ${Array.isArray(c.medailles) ? ligne('🎖️ Médailles possédées', c.medailles.map(id => (MEDAILLES.find(d => d.id === id) || {}).lib || id).join('\n')) : ''}
+              ${Array.isArray(c.medailles) ? ligne('🎖️ Médailles possédées', c.medailles.map(id => (MEDAILLES.find(d => d.id === id) || {}).lib || LIBELLES_MEDAILLES_CANDIDATURE[id] || id).join('\n')) : ''}
               ${ligne('Disponibilités', c.disponibilites)}
               ${ligne('Motivations', c.motivations)}
               ${ligne('Connaissances Bad Batch', c.connaissances)}
